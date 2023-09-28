@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <h1>Product Details</h1>
+    <div id="product-details">
+        <!-- Product Name -->
+        <h2 id="product-name"></h2>
+
+        <!-- Product Price -->
+        <p><strong>Price:</strong> <span id="product-price"></span></p>
+
+        <!-- Discount Information -->
+        <p><strong>Discount Available:</strong> <span id="discount-available"></span></p>
+        <p><strong>Discount Price:</strong> <span id="discount-price"></span></p>
+        <p><strong>Discount Percent:</strong> <span id="discount-percent"></span></p>
+
+        <!-- Product Description -->
+        <p><strong>Description:</strong></p>
+        <p id="product-description"></p>
+
+        <!-- Images -->
+        <h3>Images</h3>
+        <div id="product-images"></div>
+
+        <!-- Other Product Details -->
+        <!-- Add more HTML elements to display other product details as needed -->
+    </div>
+
+    <script>
+
+        $(document).ready(function () {
+
+            $.ajax({
+                method: "POST",
+                url: '{% url "product_detail" %}',
+                data: {
+                    "product_id": 2,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+
+                success(product) {
+                    console.log(product)
+                    updateProductDetails(product)
+                }
+            })
+        })
+
+        // Function to update the UI with the product data using jQuery
+        function updateProductDetails(data) {
+            // Update HTML elements with data from the response using jQuery
+            $("#product-name").text(data.product_name);
+            $("#product-price").text(data.product_price);
+            $("#discount-available").text(data.discount_available ? "Yes" : "No");
+            $("#discount-price").text(data.discount_price);
+            $("#discount-percent").text(data.discount_percent);
+            $("#product-description").text(data.product_description);
+
+            // Display product images using jQuery
+            const imagesContainer = $("#product-images");
+            $.each(data.images, function (index, imageData) {
+                const imgElement = $("<img>").attr("src", imageData.image);
+                imagesContainer.append(imgElement);
+            });
+
+            // Add code to update other product details as needed
+        }
+    </script>
+</body>
+
+</html>

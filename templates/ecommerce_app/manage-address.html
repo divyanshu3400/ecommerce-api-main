@@ -1,0 +1,197 @@
+{% load static %}
+
+{% block extraJs %}
+<script src="{% static 'ecommerce_app/js/user-address.js' %}"></script>
+<script>
+  // Define JavaScript variables with the generated URLs
+  var deleteAddressUrl = "{% url 'delete-user-address' %}";
+  var updateAddressUrl = "{% url 'update-user-address' %}";
+  var manageAddressUrl = "{% url 'manage_address' %}";
+  var getStatesUrl = "{% url 'get_state' %}"
+  var getCitiesUrl = "/get-cities/"
+</script>
+{% endblock extraJs %}
+
+
+<div class="container">
+  <div class="container mt-2">
+    <!-- Address List -->
+    <div class="mb-2">
+      <div class="card-header">
+        <h5>My Addresses</h5>
+      </div>
+      <div class="card-body">
+        <!-- Address items -->
+        <div class="row">
+
+          {% if addresses %}
+          {% for add in addresses %}
+          <div class="col-md-6 mb-1">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{add.address_line_1}}</h5>
+
+                <p class="card-text"> {{add.address_line_2}}, {{add.city}}, {{add.state}}, {{add.country}},
+                  {{add.postal_code}}</p>
+
+                <!-- Edit and Delete buttons with icons -->
+                <button type="button" class="btn btn-info px-3" data-id="{{add.id}}"
+                  data-address-line-1="{{add.address_line_1}}" data-address-line-2="{{add.address_line_2}}"
+                  data-city="{{add.city}}" data-state="{{add.state}}" data-country="{{add.country}}"
+                  data-postal-code="{{add.postal_code}}" onclick="editAddress(this)">
+                  <i class="fas fa-edit" aria-hidden="true"></i>
+                </button>
+
+                <button type="button" class="btn btn-danger px-3" onclick="deleteAddress('{{add.id}}')">
+                  <i class="fas fa-trash" aria-hidden="true"></i></button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          {% else %}
+
+          <div id="message-container">
+            <div id="message">
+              <h2>No Address Found</h2>
+            </div>
+          </div>
+
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-sm btn-outline-primary" onclick="showForm()" type="button">
+      <i class="fas fa-plus-circle"></i> Add Address
+    </button>
+  </div>
+</div>
+
+<div id="addForm" class="container py-2 ">
+  <div class="row d-flex justify-content-center align-items-center">
+    <div class="col">
+      <div class="card my-4 shadow-3">
+        <div class="row g-0">
+          <div class="col-xl-6 d-xl-block bg-image">
+            <img src="https://mdbcdn.b-cdn.net/img/Others/extended-example/delivery.webp" alt="Sample photo"
+              class="img-fluid" />
+            <div class="mask" style="background-color: rgba(0, 0, 0, 0.6)">
+              <div class=" justify-content-center align-items-center h-100">
+                <div class=" text-center" style="margin-top: 220px;">
+                  <i class="fas fa-truck text-white fa-3x"></i>
+                  <p class="text-white title-style">Educart Assured</p>
+                  <p class="text-white mb-0"></p>
+
+                  <figure class="text-center mb-0">
+                    <blockquote class="blockquote text-white">
+                      <p class="pb-3">
+                        <i class="fas fa-quote-left fa-xs text-primary" style="color: hsl(210, 100%, 50%) ;"></i>
+                        <span class="lead font-italic">Everything at your doorstep.</span>
+                        <i class="fas fa-quote-right fa-xs text-primary" style="color: hsl(210, 100%, 50%) ;"></i>
+                      </p>
+                    </blockquote>
+
+                  </figure>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-6">
+            <div class="card-body p-md-3 text-black">
+              <h3 class="mb-4 text-uppercase">Delivery Info</h3>
+
+              <form action="" id="addressForm" method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                  <label class="form-label" for="id_address_line_1">Address Line-1</label><span
+                    style="color: red;">*</span>
+                  {{form.address_line_1}}
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="id_address_line_2">Address Line-2 (Optional).</label>
+                  {{form.address_line_2}}
+                </div>
+
+                <div class="mb-3">
+                  <select id="stateDropdown" class="select2 select2-hidden-accessible"
+                    style="width: 100%; height: 40px;" tabindex="-1" aria-hidden="true" name="state">
+                    <option value="">State</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <select id="cityDropdown" class="select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1"
+                    aria-hidden="true" name="city">
+                  </select>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <div class="mb-2">
+                      <label class="form-label" for="id_postal_code">Postal Code</label>
+                      <span style="color: red;">*</span>
+                      {{form.postal_code}}
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="mb-2">
+                      <label class="form-label" for="id_country">Country</label>
+                      <span style="color: red;">*</span>
+                      {{form.country}}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- <div id="button_update" class="d-flex justify-content-end pt-3">
+                  <button type="button" id="updateAddressBtn" class="btn btn-primary px-3">
+                    <i class='fa fa-edit' style='margin-right: 10px; color: white' aria-hidden="true"></i>
+                    Update Address
+                  </button>
+                </div> -->
+
+                <div id="addBtn" class="d-flex justify-content-end pt-3">
+                  <button type="submit" id="saveAddressBtn" class="btn btn-primary px-3">
+                    <i class='fa fa-save' style=' margin-right: 10px; color: white' aria-hidden="true"></i>
+                    Save Address
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Hidden Delete Address Dialog -->
+<div class="modal fade" id="deleteAddressModal" tabindex="-1" role="dialog" aria-labelledby="deleteAddressModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteAddressModalLabel">Delete Address</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure? You want to delete this address?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelButton">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- <script>
+
+</script> -->

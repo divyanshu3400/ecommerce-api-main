@@ -1,0 +1,266 @@
+ .popup-modal-top {
+     padding-top: 10px;
+     padding-left: 10px;
+     padding-right: 10px;
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background-color: rgba(0, 0, 0, 0.5);
+     display: flex;
+     align-items: flex-start;
+     /* Align items to the top */
+     justify-content: center;
+     z-index: 9999;
+     /* Ensure the modal is on top */
+ }
+
+ .popup-modal-bottom {
+     position: fixed;
+     padding-left: 10px;
+     padding-right: 10px;
+     bottom: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background-color: rgba(0, 0, 0, 0.5);
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     z-index: 9999;
+     /* Ensure the modal is on top */
+ }
+
+
+ .popup-message-top {
+     text-align: center;
+     background-color: #fff;
+     padding: 20px;
+     border-radius: 5px;
+     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+     width: 100%;
+     /* Set the message width to 100% */
+     max-width: 100vw;
+     /* Optional: Limit the maximum width of the message */
+ }
+
+ .popup-message-bottom {
+     text-align: center;
+     background-color: #fff;
+     bottom: 0;
+     left: 0;
+     padding: 20px;
+     border-radius: 5px;
+     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+     width: 100%;
+     /* Set the message width to 100% */
+     max-width: 100vw;
+     /* Optional: Limit the maximum width of the message */
+ }
+
+ .md-form {
+     position: relative;
+     margin-top: 40px;
+     margin-bottom: 40px;
+     margin-left: 20px;
+     margin-right: 20px;
+ }
+
+ .md-form .input-group {
+     position: relative;
+ }
+
+ .md-form .input-group i.input-prefix {
+     position: absolute;
+     top: 50%;
+     transform: translateY(-50%);
+     left: 0.5rem;
+     z-index: 1;
+ }
+
+ .md-form .input-group input {
+     border: none;
+     border-bottom: 1px solid #999;
+     outline: none;
+     padding-bottom: 0.5rem;
+     margin-left: 2rem;
+     /* Adjust the margin left as needed */
+     width: 100%;
+     font-size: 16px;
+     transition: border-color 0.3s ease;
+     padding-left: 2rem;
+     /* Add padding to the left to accommodate the icon */
+ }
+
+ .md-form .input-group input:focus {
+     border-color: #3b71ca;
+ }
+
+ .md-form .input-group label {
+     position: absolute;
+     bottom: 0.5rem;
+     left: 2rem;
+     /* Adjust the left position to match the input margin */
+     color: #999;
+     font-size: 16px;
+     transition: all 0.3s ease;
+     transform-origin: bottom left;
+     pointer-events: none;
+ }
+
+ .md-form .input-group input:focus+label,
+ .md-form .input-group input:not(:placeholder-shown)+label {
+     transform: translateY(-1.5rem) scale(0.8);
+     color: #3b71ca;
+ }
+
+ .md-form .input-group input:focus::placeholder {
+     opacity: 0;
+ }
+
+ .btn-group-radio {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .btn-check-radio {
+    display: none;
+  }
+
+  .btn-radio {
+    flex: 1;
+    padding: 5px;
+    text-align: left;
+    background-color: transparent;
+    border: none;
+    color: #333;
+    border-radius: 0;
+    cursor: pointer;
+    position: relative;
+  }
+
+  
+  .error-message {
+    display: block;
+    background-color: #ffeeee;
+    color: #aa2222;
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 5px;
+  }
+  .success-message {
+    display: block;
+    background-color: #dbf8e6;
+    color: #0d7e11;
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 5px;
+  }
+
+  .success-message i {
+    margin-right: 5px;
+  }
+
+  .success-message i:hover {
+    cursor: pointer;
+  }
+
+  .error-message i {
+    margin-right: 5px;
+  }
+
+  .error-message i:hover {
+    cursor: pointer;
+  }
+
+  .btn-radio::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(0, -50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    background-color: #fff;
+  }
+
+  .btn-check-radio:checked+.btn-radio::before {
+    background-color: #fff;
+    border-color: #ccc;
+  }
+
+  #message-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  #message {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    text-align: center;
+  }
+  
+  h2 {
+    color: #333;
+    font-size: 24px;
+    margin: 0;
+  }
+  #message-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+  }
+  
+  #message {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+  }
+  
+  h2 {
+    color: #333;
+    font-size: 24px;
+    margin: 0;
+  }
+    
+  @keyframes writing {
+    0% {
+        width: 0;
+    }
+}
+
+.writing-effect {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: writing 1s steps(40) infinite;
+}
+
+
+
+.max-size-image {
+  max-width: 100%;
+  max-height: 300px; /* Set the maximum height as needed */
+  width: auto;
+  height: auto;
+  
+}
+
+.image-container {
+  text-align: center; /* Center-align the image horizontally */
+  display: flex; /* Enable vertical centering */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  max-height: 300px; /* Set the maximum height as needed */
+}

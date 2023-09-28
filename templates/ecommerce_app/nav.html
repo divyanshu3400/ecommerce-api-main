@@ -1,0 +1,146 @@
+{% load static %}
+
+<!--Main Navigation-->
+<header>
+    <!-- Jumbotron -->
+    <div style="background-color: rgb(255, 255, 255);" class="p-3 text-center">
+        <div class="container">
+            <div class="row gy-3">
+                <!-- Left elements -->
+                <div class="col-lg-2 col-sm-4 col-4">
+                    <a href="{% url 'dashboard' %}" class="float-start">
+                        <img src="{% static 'ecommerce_app/images/EduCartLogo.png' %}" height="35" />
+                    </a>
+                </div>
+                <!-- Left elements -->
+
+                <!-- Center elements -->
+                <div class="order-lg-last col-lg-5 col-sm-8 col-8">
+                    <div class="d-flex text-black float-end">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'user-account' %}"
+                            class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i
+                                class="fas fa-user-alt m-1 me-md-2"></i>
+                            <p class="d-none d-md-block mb-0"> 
+                                {% if user.first_name %}{{user.first_name}} {% else %}Username{% endif %}</p>
+                        </a>
+
+                        <a href="{% url 'logout' %}"
+                            class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i
+                                class="fas fa-sign-out-alt m-1 me-md-2"></i>
+                            <p class="d-none d-md-block mb-0">Logout</p>
+                        </a>
+
+                        <a href="{% url 'shopping-cart' %}"
+                            class="border rounded py-1 px-3 nav-link d-flex align-items-center"> 
+                            <span><i class="fas fa-shopping-cart"></i></span>
+                            <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                            <p class="d-none d-md-block mb-0">My cart</p>
+                        </a>
+                        {% else %}
+
+                        <a data-mdb-toggle="modal" data-mdb-toggle="modal" data-mdb-target="#staticBackdrop"
+                            role="button"
+                            class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center cd-signin-modal-trigger">
+                            <i class="fas fa-sign-in-alt m-1 me-md-2"></i>
+                            <p class="d-none d-md-block mb-0">Login</p>
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+                </div>
+                <!-- Center elements -->
+
+                <!-- Right elements -->
+                <div class="col-lg-5 col-md-12 col-12">
+                    <form action="{% url 'search_products' %}" method="GET">
+                        <div class="input-group float-center">
+                            <div class="form-outline border-bottom">
+                                <input type="search" id="search-product" class="form-control text-black " name="query" />
+                                <label class="form-label" for="search-product">Search</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary shadow-0">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+                <!-- Right elements -->
+            </div>
+        </div>
+    </div>
+    <!-- Jumbotron -->
+
+    <!-- Navbar -->
+    <nav class="navbar  navbar-expand-lg " style="background-color: midnightblue;" >
+        <!-- Container wrapper -->
+        <div class="container  justify-content-center justify-content-md-between">
+            <!-- Toggle button -->
+            <button class="navbar-toggler border text-white py-2" type="button" data-mdb-toggle="collapse"
+                data-mdb-target="#navbarLeftAlignExample" aria-controls="navbarLeftAlignExample" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Collapsible wrapper -->
+            <div class="collapse  navbar-collapse" id="navbarLeftAlignExample">
+                <!-- Left links -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" aria-current="page" href="#">Home</a>
+                    </li>
+                    {% for item in navbar %}
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">{{item.nav_name}}</a>
+                    </li>                        
+                    {% endfor %}
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Hot offers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Gift boxes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Menu item</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Menu name</a>
+                    </li>
+                    <!-- Navbar dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white mb-0" href="#" id="navbarDropdown" role="button"
+                            data-mdb-toggle="dropdown" aria-expanded="false">
+                            Others
+                        </a>
+                        <!-- Dropdown menu -->
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li>
+                                <a class="dropdown-item" href="#">Action</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">Another action</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider" />
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Left links -->
+            </div>
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+
+</header>
+{% include 'ecommerce_app/login.html' %}

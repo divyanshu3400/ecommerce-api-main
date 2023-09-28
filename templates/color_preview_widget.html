@@ -1,0 +1,10 @@
+{% for choice in widget %}
+    <label class="color-option">
+        <input type="{{ widget.input_type }}"
+               name="{{ widget.name }}"
+               value="{{ choice.choice_value }}"
+               {% if choice.selected %}checked="checked"{% endif %}>
+        <span style="background-color: {{ choice.color_code }};"></span>
+        {{ choice.choice_label }}
+    </label>
+{% endfor %}

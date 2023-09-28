@@ -1,0 +1,313 @@
+{% extends "ecommerce_app/base.html" %}
+{% load static %}
+{% block title %}Register | Educart{% endblock %}
+{% block extrastyle %}
+<style>
+  .registration-form {
+    width: 600px;
+    max-height: 600px;
+    overflow-y: auto;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 50px;
+    margin-top: 50px;
+  }
+
+  @media screen and (max-width: 480px) {
+    .registration-form {
+      width: 100%;
+      max-height: none;
+    }
+  }
+
+  .registration-form h2 {
+    text-align: center;
+  }
+
+  .registration-form label {
+    font-weight: bold;
+  }
+
+  .registration-form input[type="text"],
+  .registration-form input[type="email"],
+  .registration-form input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .divider-text {
+    position: relative;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .divider-text span {
+    padding: 7px;
+    font-size: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .divider-text:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    top: 55%;
+    left: 0;
+    z-index: 1;
+  }
+
+  .btn-facebook {
+    background-color: #405D9D;
+    color: #fff;
+  }
+
+  .btn-twitter {
+    background-color: #42AEEC;
+    color: #fff;
+  }
+
+  .error-message {
+    display: block;
+    background-color: #ffeeee;
+    color: #aa2222;
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 5px;
+  }
+
+  .error-message i {
+    margin-right: 5px;
+  }
+
+  .error-message i:hover {
+    cursor: pointer;
+  }
+
+  .check-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: white;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .check-button:before {
+    content: '\f00c';
+    /* Checkmark icon */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 10px;
+  }
+
+  .check-button-green {
+    background-color: #4CAF50;
+  }
+
+  .check-button-red {
+    background-color: #FF5252;
+  }
+
+  .check-button:hover {
+    opacity: 0.8;
+  }
+</style>
+
+{% endblock %}
+
+{% block main-content %}
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+<div class=" jumbotron">
+
+  <div class="card bg-light">
+    {% if messages %}
+    <div class="alert alert-secondary mt-3" role="alert">
+      <ul class="messages">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+
+    <article class="card-body mx-auto">
+      <h4 class="card-title mt-3 text-center">Create Account</h4>
+      <p class="text-center">Get started with your free account</p>
+      <!-- <p>
+        <a href="" class="btn btn-block btn-twitter"> <i class="fab fa-twitter"></i>   Login via Twitter</a>
+        <a href="" class="btn btn-block btn-facebook"> <i class="fab fa-facebook-f"></i>   Login via facebook</a>
+      </p> -->
+      <p class="divider-text">
+        <span class="bg-light">OR</span>
+      </p>
+      <div class="row">
+        <div class="col">
+          <form method="POST" id="registrationForm">
+            {% csrf_token %}
+            <span id="usernameError" class="error-message"></span>
+            <div class="form-group input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+              </div>
+              {{ form.username }}
+            </div> <!-- form-group// -->
+            <div class="form-group input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+              </div>
+              {{ form.first_name }}
+            </div> <!-- form-group// -->
+            <div class="form-group input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+              </div>
+              {{ form.last_name }}
+            </div> <!-- form-group// -->
+            <span id="emailError" class="error-message"></span>
+            <div class="form-group input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+              </div>
+              {{ form.email }}
+            </div> <!-- form-group// -->
+            <div class="form-group input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
+              </div>
+              <select class="custom-select" style="max-width: 120px;">
+                <option selected="">+91</option>
+              </select>
+              {{ form.phone_number }}
+            </div> <!-- form-group// -->
+
+            <div class="form-group input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+              </div>
+              {{ form.password1 }}
+            </div> <!-- form-group// -->
+            <div class="form-group input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+              </div>
+              {{ form.password2 }}
+            </div> <!-- form-group// -->
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-block"> Create Account </button>
+            </div>
+            <p class="text-center">Have an account? <a href="">Log In</a> </p>
+          </form>
+        </div>
+        <div class="col-md-6">
+          <div>
+            <div id="usernamelength">
+              <p id="usernamelengthcheck" class="check-button"></p><i style="font-size:11px;">Username must be grater
+                than
+                6 character and less than 16</i>
+            </div>
+            <div id="usernamealnum">
+              <p id="usernamealnumcheck" class="check-button"></p><i style="font-size:11px;">Username must contain
+                both
+                alphabet and number</i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </article>
+
+  </div> <!-- card.// -->
+</div>
+
+<script>
+  $(document).ready(function () {
+    // Username field validation
+    $('#usernameError').hide()
+    $('#emailError').hide()
+    $('#usernamelength').show();
+    $('#usernamealnum').show();
+    $('#id_username').on('input', function () {
+      var username = $(this).val();
+      validateUsername(username);
+      $.ajax({
+        url: '/validate_username/',
+        data: {
+          'username': username
+        },
+        success: function (data) {
+          if (data.exists) {
+
+            // Example code snippet
+            $('#usernameError').show()
+            var errorMessage = "Username already exists.";
+            $("#usernameError").html('<i class="fa fa-times-circle"></i> ' + errorMessage);
+          } else {
+            $('#usernameError').hide()
+          }
+        }
+      });
+    });
+
+    // Email field validation
+    $('#id_email').on('input', function () {
+      var email = $(this).val();
+      $.ajax({
+        url: '/validate_email/',
+        data: {
+          'email': email
+        },
+        success: function (data) {
+          if (data.exists) {
+            var errorMessage = "Email address already exists.";
+            $("#emailError").html('<i class="fa fa-times-circle"></i> ' + errorMessage);
+            $("#emailError").show()
+          } else {
+            $('#emailError').hide();
+          }
+        }
+      });
+    });
+  });
+  function validateUsername(username) {
+    var usernamelength = $('#usernamelengthcheck');
+    var usernamealnum = $('#usernamealnumcheck');
+    // Check username length and alphanumeric characters
+    var isValidLength = username.length > 6 && username.length < 16;
+    var isAlNum = /[a-zA-Z]/.test(username) && /\d/.test(username);
+
+    if (isAlNum) {
+      $('#usernamealnum').show();
+      usernamealnum.removeClass('check-button-red').addClass('check-button-green');
+    }
+    if (isValidLength) {
+      $('#usernamelength').show();
+      usernamelength.removeClass('check-button-red').addClass('check-button-green');
+    }
+    if (!isAlNum) {
+      usernamealnum.removeClass('check-button-green').addClass('check-button-red');
+    }
+    if (!isValidLength) {
+      usernamelength.removeClass('check-button-green').addClass('check-button-red');
+    }
+  }
+</script>
+
+
+{% endblock main-content %}
