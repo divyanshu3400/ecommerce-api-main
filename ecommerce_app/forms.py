@@ -16,40 +16,33 @@ class UserRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'phone_number']
+        fields = ['first_name', 'last_name', 'email', 'password1', 'password2', 'phone_number']
         widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter username'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name'}),
         }
 
     def clean(self):
         cleaned_data = super().clean()
-        username = cleaned_data.get('username')
         email = cleaned_data.get('email')
         password1 = cleaned_data.get('password1')
         password2 = cleaned_data.get('password2')
         errors = {}
-
-        # Check if username or email already exists
-
-        if User.objects.filter(username=username).exists():
-            errors['username'] = 'Username already exists.'
-
         if User.objects.filter(email=email).exists():
             errors['email'] = 'Email address already exists.'
-
-        # Check if password1 and password2 match
         if password1 and password2 and password1 != password2:
             errors['password2'] = 'Passwords do not match.'
-
         if errors:
             raise ValidationError(errors)
-
-        # Save the hashed password to the user object
         self.instance.password = make_password(password1)
-
         return cleaned_data
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.username = self.cleaned_data['email']  # Set username to be the same as email
+        if commit:
+            user.save()
+        return user
 
 
 class AddressForm(forms.ModelForm):

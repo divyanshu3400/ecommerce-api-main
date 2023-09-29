@@ -70,10 +70,7 @@ def register(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            
-            # Check if a Profile instance already exists for the user
             profile, created = Profile.objects.get_or_create(user=user)
-
             # Update the phone number
             phone_number = form.cleaned_data.get('phone_number')
             profile.phone_number = phone_number
@@ -225,17 +222,17 @@ def shopping_cart(request):
 def checkout(request):
     return render(request, 'ecommerce_app/checkout.html')
 
-# @login_required(login_url='/')
+@login_required(login_url='/')
 def user_account(request):
     return render(request, 'ecommerce_app/user-account.html')
 
-# @login_required(login_url='/')
+@login_required(login_url='/')
 def user_profile(request):
     profile = request.user.profile
     address = Address.objects.filter(profile=profile)[:2]
     return render(request, 'ecommerce_app/user-profile.html',{'address':address})
 
-# @login_required(login_url='/')
+@login_required(login_url='/')
 def your_orders(request):
     return render(request,'ecommerce_app/your_orders.html')
 
@@ -248,7 +245,7 @@ def search_products(request):
 def my_wishlist(request):
     return render(request, 'ecommerce_app/my-wishlist.html')
 
-# @login_required(login_url='/')
+@login_required(login_url='/')
 def manage_address(request):
     user = request.user
     profile = user.profile
