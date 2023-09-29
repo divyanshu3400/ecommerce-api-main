@@ -49,6 +49,9 @@ urlpatterns = [
 
     # user feedback
     path('product-feedback/', CreateFeedbackView.as_view(), name='create-feedback'),
+
+    # logout API
+    path('logout/', logout, name='logout'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -5,6 +5,8 @@ from PIL import Image
 from rest_framework.decorators import api_view
 import base64
 from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
+
 from ecommerce_api.serializers import *
 from django.shortcuts import render, get_object_or_404
 import random
@@ -19,6 +21,9 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from ecommerce_app.models import *
 from ecommerce_app.model_serialize_mapping.mapping import PRODUCT_TYPE_MAPPING
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 def email_confirmation_view(request):
@@ -88,14 +93,17 @@ class EmailOTPVerificationView(APIView):
         try:
             if verify_otp(user, otp_token):
                 user.is_active = True
-                return Response({'message': 'Logged in successfully'}, status=status.HTTP_200_OK)
+                user.save()
 
+                # Generate or retrieve an authentication token for the user
+                token, created = Token.objects.get_or_create(user=user)
+
+                return Response({'message': 'Logged in successfully', 'token': token.key}, status=status.HTTP_200_OK)
             else:
                 OTPToken.objects.all().delete()
-                return Response({'message': 'verification failed'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'message': 'Verification failed'}, status=status.HTTP_400_BAD_REQUEST)
         except OTPToken.DoesNotExist:
             return Response({'error': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
-
 
 def verify_otp(user, otp):
     otp_token = OTPToken.objects.filter(
@@ -108,17 +116,20 @@ def verify_otp(user, otp):
             return True
     return False
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class NavbarCatList(generics.ListAPIView):
     queryset = NavbarCat.objects.all()
     serializer_class = NavBarCatSerializer
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class AllProductList(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class ParentCategoryList(APIView):
     serializer_class = ParentCategorySerializer
 
@@ -128,7 +139,8 @@ class ParentCategoryList(APIView):
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class ChildCategoryList(APIView):
     serializer_class = ChildCategorySerializer
 
@@ -138,7 +150,8 @@ class ChildCategoryList(APIView):
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class CategoryProductList(APIView):
     serializer_Class = ProductSerializer
 
@@ -148,13 +161,16 @@ class CategoryProductList(APIView):
         serializer = self.serializer_Class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class BrandList(generics.ListAPIView):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
 
 
 @api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def update_profile_data(request):
     try:
         serializer = ProfileUpdateSerializer(data=request.data)
@@ -227,7 +243,8 @@ def update_profile_data(request):
 #         serializer = serializer_class(product, context={'request': request})
 #         return Response(serializer.data)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class ProductDetailApi(APIView):
     def post(self, request):
         product_id = request.data.get('product_id')
@@ -255,6 +272,8 @@ class ProductDetailApi(APIView):
 
         return Response(data)
 
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class UserProfileAPI(APIView):
     def post(self, request):
         user_id = request.data.get('user_id')
@@ -289,7 +308,8 @@ class UserProfileAPI(APIView):
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class AddToCart(APIView):
     def post(self, request):
         serializer = CartItemCreateSerializer(data=request.data)
@@ -308,7 +328,8 @@ class AddToCart(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class RemoveProductFromCartAPIView(APIView):
     def post(self, request):
         user_id = request.data.get('user_id')
@@ -325,7 +346,8 @@ class RemoveProductFromCartAPIView(APIView):
         cart_item.delete()
         return Response({"message": "Product removed from the Cart successfully."}, status=status.HTTP_204_NO_CONTENT)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class CartDetailView(APIView):
     def get(self, request):
         user_id = request.data.get('user_id')
@@ -342,7 +364,8 @@ class CartDetailView(APIView):
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class AddToWishlistAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = AddToWishlistSerializer(data=request.data)
@@ -364,7 +387,8 @@ class AddToWishlistAPIView(APIView):
             return Response({"message": "Product added to the wishlist successfully."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class RemoveProductFromWishlistAPIView(APIView):
     def post(self, request):
         user_id = request.data.get('user_id')
@@ -377,7 +401,8 @@ class RemoveProductFromWishlistAPIView(APIView):
         wishlist_item.delete()
         return Response({"message": "Product removed from the wishlist successfully."},status=status.HTTP_204_NO_CONTENT)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class WishlistItemListByUserView(generics.ListAPIView):
     serializer_class = ProductSerializer
 
@@ -393,7 +418,8 @@ class WishlistItemListByUserView(generics.ListAPIView):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class AddAddressToProfileAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = AddressSerializer(data=request.data)
@@ -404,7 +430,8 @@ class AddAddressToProfileAPIView(APIView):
             return Response(AddressSerializer(address).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class UpdateAddressAPIView(APIView):
     def post(self, request):
         user_id = request.data.get('user_id')
@@ -422,7 +449,8 @@ class UpdateAddressAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class DeleteAddressAPIView(APIView):
     def post(self, request):
         user_id = request.data.get('user_id')
@@ -435,7 +463,9 @@ class DeleteAddressAPIView(APIView):
             return Response({"error": "Address not found."}, status=status.HTTP_404_NOT_FOUND)
         address.delete()
         return Response({"message": "Address deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
-
+    
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class IncreaseCartItemQuantity(APIView):
     def post(self, request):
         cart_item_id = request.data.get("cart_item_id")
@@ -453,7 +483,8 @@ class IncreaseCartItemQuantity(APIView):
         else:
             return Response({'error': 'Quantity exceeds available stock'}, status=status.HTTP_400_BAD_REQUEST)
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class DecreaseCartItemQuantity(APIView):
     def post(self, request):
         cart_item_id = request.data.get("cart_item_id")
@@ -469,7 +500,8 @@ class DecreaseCartItemQuantity(APIView):
 
         return Response({'quantity': cart_item.quantity})
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class PlaceOrderView(APIView):
     def post(self, request):
         user_id = request.data.get("user_id")
@@ -515,7 +547,8 @@ class PlaceOrderView(APIView):
         cart.clear_cart()
         return Response({"message": "Order placed successfully"})
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class UpdateOrderStatusView(APIView):
     def post(self, request):
         user_id = request.data.get('user_id')
@@ -542,7 +575,8 @@ class UpdateOrderStatusView(APIView):
         
         return Response({"message": "Order status updated successfully"})
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class GetUserOrdersView(APIView):
     def post(self, request):
         user_id = request.data.get("user_id")
@@ -552,7 +586,8 @@ class GetUserOrdersView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class CreateFeedbackView(APIView):
     def post(self, request):
         product_id = request.data.get('product_id')
@@ -580,3 +615,16 @@ class CreateFeedbackView(APIView):
                 feedback_serializer.save()
                 return Response(feedback_serializer.data, status=status.HTTP_201_CREATED)
             return Response(feedback_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def logout(request):
+
+    user_id = request.data.get("user_id")
+    user = User.objects.get(id=user_id)
+    token, created = Token.objects.get_or_create(user=user)
+    token.delete()
+
+    return Response({'message': 'Logged out successfully.'}, status=status.HTTP_200_OK)
