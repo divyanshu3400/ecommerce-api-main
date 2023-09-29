@@ -19,8 +19,8 @@ DEBUG = True
 
 SECURE_SSL_REDIRECT = False
 
-# ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = [".awsapprunner.com"]
+ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = [".awsapprunner.com"]
 
 # Application definition
 
