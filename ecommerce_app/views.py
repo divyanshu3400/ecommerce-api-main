@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .forms import UserRegistrationForm, AddressForm,ChangeUserPasswordForm
 from django.utils import timezone
-from django.contrib.auth import login,logout, get_user_model, update_session_auth_hash
+from django.contrib.auth import login,logout, get_user_model
 from ecommerce.backends import EmailBackend
 from django.contrib.auth.decorators import login_required
 import secrets
@@ -189,15 +189,10 @@ def change_password(request):
 
 # ###################################################################
 
-
 # functions to render the templates
 
 def dashboard(request):
     navbar = NavbarCat.objects.all()
-    for nav in navbar:
-        cat = ParentCategory.objects.filter(nav=nav)
-        for c in cat:    
-            print(f"{c.pcat_name} - ({nav.nav_name})")
     return render(request, 'ecommerce_app/dashboard.html',{'navbar':navbar})
 
 def dummy_product(request):
