@@ -5,7 +5,7 @@ from ecommerce import settings
 
 urlpatterns = [
 
-    path('/', views.dashboard, name='dashboard'),
+    path('', views.dashboard, name='dashboard'),
     path('product_detail/<int:product_id>/<str:product_category_name>/', views.product_detail, name="product_detail"),
     path('dummy_product/', views.dummy_product, name="dummy_product"),
     path('cart/', views.shopping_cart, name="shopping-cart"),
