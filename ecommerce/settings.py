@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-)bmx7pjg2@z@ze6cg=7frjos78el#7c&+*fa#dei)ef)c_wknp
 
 # SECRET_KEY = generate_secret_key()
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 SECURE_SSL_REDIRECT = False
 
