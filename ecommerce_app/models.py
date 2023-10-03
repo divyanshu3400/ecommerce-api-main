@@ -9,7 +9,7 @@ from django.utils.text import slugify
 class NavbarCat(models.Model):
     nav_id = models.AutoField(primary_key=True)
     nav_name = models.CharField(max_length=200, blank=False, null=False)
-    nav_logo = models.ImageField(upload_to='media/navbar_logos/', null=False, default='images')
+    nav_logo = models.ImageField(upload_to='navbar_logos/', null=False, default='images')
     nav_status = models.BooleanField()
     created_at = models.DateTimeField()
 
@@ -26,7 +26,7 @@ class ParentCategory(models.Model):
     nav = models.ForeignKey(NavbarCat, on_delete=models.CASCADE)
     pcat_id = models.AutoField(primary_key=True)
     pcat_name = models.CharField(max_length=200, blank=False, null=False)
-    pcat_logos = models.ImageField(upload_to="media/parent_cat_logo/", null=False, default='images')
+    pcat_logos = models.ImageField(upload_to="parent_cat_logo/", null=False, default='images')
     pcat_status = models.BooleanField()
     created_at = models.DateTimeField()
 
@@ -260,7 +260,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/product_images/')
+    image = models.ImageField(upload_to='product_images/')
 
     class Meta:
         db_table = 'product_image'
@@ -276,7 +276,7 @@ class Brand(models.Model):
     meta_title = models.SlugField(max_length=200, unique=True, blank=True)
     meta_description = models.SlugField(max_length=200, unique=True, blank=True)
     status = models.BooleanField()
-    brand_image = models.ImageField(upload_to='media/brand_logos')
+    brand_image = models.ImageField(upload_to='brand_logos')
 
     class Meta:
         db_table = 'products_brand'

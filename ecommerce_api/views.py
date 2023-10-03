@@ -94,11 +94,13 @@ class EmailOTPVerificationView(APIView):
             if verify_otp(user, otp_token):
                 user.is_active = True
                 user.save()
-
-                # Generate or retrieve an authentication token for the user
+                
                 token, created = Token.objects.get_or_create(user=user)
-
-                return Response({'message': 'Logged in successfully', 'token': token.key}, status=status.HTTP_200_OK)
+                data ={'message': 'Logged in successfully', 
+                       'token': token.key,
+                       "user_id":user.id
+                       }
+                return Response(data, status=status.HTTP_200_OK)
             else:
                 OTPToken.objects.all().delete()
                 return Response({'message': 'Verification failed'}, status=status.HTTP_400_BAD_REQUEST)
@@ -116,31 +118,27 @@ def verify_otp(user, otp):
             return True
     return False
 
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+
 class NavbarCatList(generics.ListAPIView):
     queryset = NavbarCat.objects.all()
     serializer_class = NavBarCatSerializer
 
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+
 class AllProductList(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+
 class ParentCategoryList(APIView):
     serializer_class = ParentCategorySerializer
 
     def post(self, request):
         nav_id = request.data.get('nav_id')
         queryset = ParentCategory.objects.filter(nav=nav_id)
-        serializer = self.serializer_class(queryset, many=True)
+        serializer = self.serializer_class(queryset, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+
 class ChildCategoryList(APIView):
     serializer_class = ChildCategorySerializer
 
@@ -150,8 +148,7 @@ class ChildCategoryList(APIView):
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+
 class CategoryProductList(APIView):
     serializer_Class = ProductSerializer
 
@@ -161,8 +158,7 @@ class CategoryProductList(APIView):
         serializer = self.serializer_Class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+
 class BrandList(generics.ListAPIView):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer

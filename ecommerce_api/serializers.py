@@ -89,9 +89,19 @@ class NavBarCatSerializer(serializers.ModelSerializer):
 
 
 class ParentCategorySerializer(serializers.ModelSerializer):
+    # Create a custom field to represent the absolute URL of pcat_logos
+    pcat_logos_absolute_url = serializers.SerializerMethodField()
+
     class Meta:
         model = ParentCategory
         fields = '__all__'
+
+    def get_pcat_logos_absolute_url(self, obj):
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(obj.pcat_logos)
+        else:
+            return obj.pcat_logos
 
 
 class ChildCategorySerializer(serializers.ModelSerializer):

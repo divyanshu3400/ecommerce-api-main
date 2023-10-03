@@ -19,7 +19,7 @@ DEBUG = True
 
 SECURE_SSL_REDIRECT = False
 
-ALLOWED_HOSTS = ["3.86.219.2","localhost"]
+ALLOWED_HOSTS = ["127.0.0.1","localhost"]
 
 # ALLOWED_HOSTS = [".awsapprunner.com"]
 
