@@ -147,14 +147,23 @@ class ChildCategoryList(APIView):
         queryset = ChildCategory.objects.filter(pcat=pcat)
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
 
+
+class FilterProductsByParentCategory(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        parent_category_id = self.request.data.get('pcat_id')
+        return Product.objects.filter(category__pcat__pcat_id=parent_category_id)
+    
 
 class CategoryProductList(APIView):
     serializer_Class = ProductSerializer
 
     def post(self, request):
         category = request.data.get('child_cat_id')
-        queryset = FashionProduct.objects.filter(category=category)
+        queryset = Product.objects.filter(category=category)
         serializer = self.serializer_Class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -220,27 +229,7 @@ def update_profile_data(request):
         return Response({"detail": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
-# class ProductDetailApi(APIView):
-#     def post(self, request):
-#         product_id = request.data.get('product_id')
-#         category_name = request.data.get('category_name')
 
-#         if category_name not in PRODUCT_TYPE_MAPPING:
-#             return Response({'error': 'Invalid product type'}, status=status.HTTP_400_BAD_REQUEST)
-
-#         product_info = PRODUCT_TYPE_MAPPING[category_name]
-#         model = product_info['model']
-#         serializer_class = product_info['serializer']
-
-#         try:
-#             product = model.objects.get(pk=product_id)
-#         except model.DoesNotExist:
-#             return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
-#         serializer = serializer_class(product, context={'request': request})
-#         return Response(serializer.data)
-
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 class ProductDetailApi(APIView):
     def post(self, request):
         product_id = request.data.get('product_id')
@@ -380,7 +369,7 @@ class AddToWishlistAPIView(APIView):
                 return Response({"message": "Product is already in the wishlist."}, status=status.HTTP_200_OK)
             wishlist_item = WishlistItem(user=user, product=product)
             wishlist_item.save()
-            return Response({"message": "Product added to the wishlist successfully."}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Product added to the wishlist successfully."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @authentication_classes([TokenAuthentication])
@@ -393,9 +382,9 @@ class RemoveProductFromWishlistAPIView(APIView):
             user = User.objects.get(pk=user_id)
             wishlist_item = WishlistItem.objects.get(user=user, product=product_id)
         except WishlistItem.DoesNotExist:
-            return Response({"error": "Wishlist item not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Wishlist item not found."}, status=status.HTTP_404_NOT_FOUND)
         wishlist_item.delete()
-        return Response({"message": "Product removed from the wishlist successfully."},status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Product removed from the wishlist successfully."},status=status.HTTP_200_OK)
 
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])

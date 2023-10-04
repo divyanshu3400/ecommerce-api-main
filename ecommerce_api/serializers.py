@@ -35,6 +35,8 @@ class ProductSizesSerializer(serializers.ModelSerializer):
         fields = ['id','product_size']
 
 
+
+
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
@@ -48,6 +50,15 @@ class ProductImageSerializer(serializers.ModelSerializer):
             image_url = None
 
         return {'image': image_url, }
+
+
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, source='productimage_set') 
+    class Meta:
+        model = Product
+        fields = '__all__'
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -89,7 +100,6 @@ class NavBarCatSerializer(serializers.ModelSerializer):
 
 
 class ParentCategorySerializer(serializers.ModelSerializer):
-    # Create a custom field to represent the absolute URL of pcat_logos
     pcat_logos_absolute_url = serializers.SerializerMethodField()
 
     class Meta:
@@ -147,6 +157,7 @@ class BookProductSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, source='productimage_set')
     class Meta:
         model = Product
         fields = '__all__'

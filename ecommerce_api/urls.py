@@ -14,7 +14,7 @@ urlpatterns = [
     path('child-categories-list/', ChildCategoryList.as_view(), name='child-categories-list'),
     path('cat-product-list/', CategoryProductList.as_view(), name='product-list'),
     path('brand-list/', BrandList.as_view(), name='brand-list'),
-
+    path('pcat-products/', FilterProductsByParentCategory.as_view(), name='pcat-products'),
 
     path('update-profile/', update_profile_data, name='update_profile'),
     path('all-product-list/', AllProductList.as_view(), name='all-product-list'),
